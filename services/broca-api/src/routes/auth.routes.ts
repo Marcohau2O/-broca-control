@@ -1,0 +1,17 @@
+import { Router } from "express";
+
+import { login, me } from "../controllers/auth.controller.js";
+
+import { authenticate } from "../middlewares/authenticate.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { requireJson } from "../middlewares/require-json.middleware.js";
+
+import { loginSchema } from "../validators/auth.validator.js";
+
+const router = Router()
+
+router.post('/login', requireJson, validate(loginSchema), login)
+
+router.get('/me', authenticate, me)
+
+export default router

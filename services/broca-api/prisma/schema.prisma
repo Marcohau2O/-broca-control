@@ -1,0 +1,439 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ======================================================
+// ENUMS
+// ======================================================
+
+enum EstadoOperativo {
+  DISPONIBLE
+  EN_USO
+  EN_LIMPIEZA
+  EN_MANTENIMIENTO
+  NO_DISPONIBLE
+  EXTRAVIADA
+  CAMBIO_URGENTE
+  BAJA
+}
+
+enum TipoMovimiento {
+  ALTA
+  USO
+  CAMBIO_UBICACION
+  CAMBIO_ESTADO
+  CAMBIO_URGENTE
+  BAJA
+  INTENTO_USO_BLOQUEADO
+}
+
+enum TipoAlerta {
+  VIDA_PREVENTIVA
+  CAMBIO_URGENTE
+  INTENTO_USO_BLOQUEADO
+  INCONSISTENCIA_INVENTARIO
+}
+
+enum EstadoAlerta {
+  PENDIENTE
+  REVISADA
+}
+
+enum ResultadoAuditoria {
+  EXITOSO
+  RECHAZADO
+  ERROR
+}
+
+// ======================================================
+// USUARIOS, ROLES Y PERMISOS
+// ======================================================
+
+model Usuario {
+  id           Int     @id @default(autoincrement())
+  nombre       String
+  correo       String  @unique
+  passwordHash String
+  activo       Boolean @default(true)
+
+  rolId Int
+  rol   Rol @relation(fields: [rolId], references: [id])
+
+  usosRegistrados UsoInstrumento[]
+  movimientos     Movimiento[]
+  auditorias      Auditoria[]
+  bajasRealizadas BajaInstrumento[]
+
+  instrumentosResponsable Instrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([rolId])
+  @@index([activo])
+}
+
+model Rol {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  usuarios Usuario[]
+  permisos RolPermiso[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permiso {
+  id          Int     @id @default(autoincrement())
+  codigo      String  @unique
+  descripcion String?
+
+  roles RolPermiso[]
+
+  createdAt DateTime @default(now())
+}
+
+model RolPermiso {
+  id Int @id @default(autoincrement())
+
+  rolId     Int
+  permisoId Int
+
+  rol     Rol     @relation(fields: [rolId], references: [id])
+  permiso Permiso @relation(fields: [permisoId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([rolId, permisoId])
+  @@index([rolId])
+  @@index([permisoId])
+}
+
+// ======================================================
+// CATÁLOGOS
+// ======================================================
+
+model TipoInstrumento {
+  id          Int     @id @default(autoincrement())
+  codigo      String  @unique
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  instrumentos Instrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Marca {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  modelos      Modelo[]
+  instrumentos Instrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Modelo {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  activo      Boolean @default(true)
+
+  marcaId Int
+  marca   Marca @relation(fields: [marcaId], references: [id])
+
+  instrumentos Instrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([marcaId, nombre])
+  @@index([marcaId])
+}
+
+model Proveedor {
+  id       Int     @id @default(autoincrement())
+  nombre   String  @unique
+  contacto String?
+  telefono String?
+  correo   String?
+  activo   Boolean @default(true)
+
+  instrumentos Instrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ubicacion {
+  id          Int     @id @default(autoincrement())
+  codigo      String  @unique
+  nombre      String
+  descripcion String?
+  activo      Boolean @default(true)
+
+  instrumentos Instrumento[]
+  usos         UsoInstrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([activo])
+}
+
+model Servicio {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  usos UsoInstrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Procedimiento {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  usos UsoInstrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MotivoBaja {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  bajas BajaInstrumento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ======================================================
+// INSTRUMENTOS
+// ======================================================
+
+model Instrumento {
+  id Int @id @default(autoincrement())
+
+  codigo      String  @unique
+  qrToken     String  @unique
+  descripcion String?
+
+  lote            String?
+  serie           String?
+  facturaRemision String?
+
+  usosMaximos    Int @default(3)
+  usosRealizados Int @default(0)
+
+  estadoOperativo EstadoOperativo @default(DISPONIBLE)
+  activo          Boolean         @default(true)
+
+  fechaAlta DateTime  @default(now())
+  fechaBaja DateTime?
+
+  tipoInstrumentoId Int
+  tipoInstrumento   TipoInstrumento @relation(fields: [tipoInstrumentoId], references: [id])
+
+  marcaId Int?
+  marca   Marca? @relation(fields: [marcaId], references: [id])
+
+  modeloId Int?
+  modelo   Modelo? @relation(fields: [modeloId], references: [id])
+
+  proveedorId Int?
+  proveedor   Proveedor? @relation(fields: [proveedorId], references: [id])
+
+  ubicacionId Int?
+  ubicacion   Ubicacion? @relation(fields: [ubicacionId], references: [id])
+
+  responsableId Int?
+  responsable   Usuario? @relation(fields: [responsableId], references: [id])
+
+  usos        UsoInstrumento[]
+  movimientos Movimiento[]
+  alertas     Alerta[]
+
+  baja BajaInstrumento?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([estadoOperativo])
+  @@index([tipoInstrumentoId])
+  @@index([marcaId])
+  @@index([modeloId])
+  @@index([proveedorId])
+  @@index([ubicacionId])
+  @@index([responsableId])
+  @@index([usosRealizados])
+  @@index([activo])
+}
+
+// ======================================================
+// REGISTRO DE USOS
+// ======================================================
+
+model UsoInstrumento {
+  id Int @id @default(autoincrement())
+
+  instrumentoId Int
+  instrumento   Instrumento @relation(fields: [instrumentoId], references: [id])
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  procedimientoId Int?
+  procedimiento   Procedimiento? @relation(fields: [procedimientoId], references: [id])
+
+  servicioId Int?
+  servicio   Servicio? @relation(fields: [servicioId], references: [id])
+
+  ubicacionId Int?
+  ubicacion   Ubicacion? @relation(fields: [ubicacionId], references: [id])
+
+  numeroUso       Int
+  vidasAnteriores Int
+  vidasRestantes  Int
+
+  idempotencyKey String? @unique
+
+  responsableUso String?
+  observaciones  String?
+
+  fechaHora DateTime @default(now())
+
+  @@unique([instrumentoId, numeroUso])
+  @@index([instrumentoId, fechaHora])
+  @@index([usuarioId])
+  @@index([servicioId])
+  @@index([procedimientoId])
+  @@index([ubicacionId])
+}
+
+// ======================================================
+// MOVIMIENTOS / TRAZABILIDAD OPERATIVA
+// ======================================================
+
+model Movimiento {
+  id Int @id @default(autoincrement())
+
+  instrumentoId Int
+  instrumento   Instrumento @relation(fields: [instrumentoId], references: [id])
+
+  usuarioId Int?
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+
+  tipo TipoMovimiento
+
+  estadoAnterior EstadoOperativo?
+  estadoNuevo    EstadoOperativo?
+
+  ubicacionAnterior String?
+  ubicacionNueva    String?
+
+  descripcion String?
+
+  fechaHora DateTime @default(now())
+
+  @@index([instrumentoId, fechaHora])
+  @@index([tipo])
+  @@index([usuarioId])
+}
+
+// ======================================================
+// ALERTAS
+// ======================================================
+
+model Alerta {
+  id Int @id @default(autoincrement())
+
+  instrumentoId Int
+  instrumento   Instrumento @relation(fields: [instrumentoId], references: [id])
+
+  tipo   TipoAlerta
+  estado EstadoAlerta @default(PENDIENTE)
+
+  mensaje String
+
+  fechaCreacion DateTime  @default(now())
+  fechaRevision DateTime?
+
+  @@index([instrumentoId])
+  @@index([tipo, estado])
+  @@index([fechaCreacion])
+}
+
+// ======================================================
+// AUDITORÍA
+// ======================================================
+
+model Auditoria {
+  id Int @id @default(autoincrement())
+
+  usuarioId Int?
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+
+  accion     String
+  modulo     String
+  registroId String?
+
+  datosAnteriores Json?
+  datosNuevos     Json?
+
+  resultado   ResultadoAuditoria @default(EXITOSO)
+  descripcion String?
+
+  fechaHora DateTime @default(now())
+
+  @@index([usuarioId])
+  @@index([modulo, registroId])
+  @@index([fechaHora])
+  @@index([resultado])
+}
+
+// ======================================================
+// BAJA DEFINITIVA DEL INSTRUMENTO
+// ======================================================
+
+model BajaInstrumento {
+  id Int @id @default(autoincrement())
+
+  instrumentoId Int         @unique
+  instrumento   Instrumento @relation(fields: [instrumentoId], references: [id])
+
+  motivoBajaId Int
+  motivoBaja   MotivoBaja @relation(fields: [motivoBajaId], references: [id])
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  observaciones String?
+
+  fechaBaja DateTime @default(now())
+
+  @@index([usuarioId])
+  @@index([motivoBajaId])
+}

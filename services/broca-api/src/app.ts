@@ -17,6 +17,8 @@ import alertaRoutes from './routes/alerta.routes.js'
 import auditoriaRoutes from './routes/auditoria.routes.js'
 import dashboardRoutes from './routes/dashboard.routes.js'
 import reporteRoutes from './routes/reporte.routes.js'
+import usuarioRoutes from './routes/usuario.routes.js'
+import rolRoutes from './routes/rol.routes.js'
 
 import { notFoundHandler } from "./middlewares/not-found.middleware.js"
 import { errorHandler } from "./middlewares/error.middleware.js"
@@ -78,6 +80,8 @@ app.use('/api/alertas', alertaRoutes)
 app.use('/api/auditoria', auditoriaRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/reportes', reporteRoutes)
+app.use('/api/usuarios', usuarioRoutes)
+app.use('/api/roles', rolRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

@@ -70,6 +70,14 @@ const permisos = [
     codigo: 'catalogo.administrar',
     descripcion: 'Administrar catálogos del sistema',
   },
+  {
+    codigo: 'usuario.ver',
+    descripcion: 'Consultar usuarios',
+  },
+  {
+    codigo: 'usuario.crear',
+    descripcion: 'Crear usuarios',
+  },
 ] as const
 
 const roles = [
@@ -116,6 +124,7 @@ const permisosPorRol: Record<string, string[]> = {
     'reporte.ver',
     'reporte.exportar',
     'auditoria.ver',
+    'usuario.ver',
   ],
 }
 

@@ -19,25 +19,25 @@
                                         <span class="font-headline-sm text-headline-sm tracking-tight text-on-primary">BROCA CONTROL</span>
                                         <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-error-container text-on-error-container text-[10px] font-bold">+</span>
                                     </div>
-                                    <span class="font-label-sm text-label-sm text-primary-fixed uppercase tracking-wider">Trazalibidad Quirúgica</span>
+                                    <span class="font-label-sm text-label-sm text-primary-fixed uppercase tracking-wider">Trazabilidad Quirúrgica</span>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-space-sm mt-space-md">
                                 <span class="inline-flex items-center gap-space-xs px-space-sm pt-space-xs rounded-full bg-surface-container-lowest/10 w-fit text-primary-fixed font-code-md text-code-md">
                                     <span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-pulse"></span>
-                                    CENTRAL CEYE • ISO 13485
+                                    CONTROL DE INSTRUMENTAL • TRAZABILIDAD
                                 </span>
-                                <h1 class="font-headline-lg text-headline-lg text-on-primary leading-tight">Control de Instrumental Crítico y Trazabilidad de Frescasdo</h1>
-                                <p class="font-body-md text-body-md text-primary-fixed/80">Acceso exclusivo para personal quirúrgico y hospitalario autorizado. Validación obligatoria de ciclos de esterilización y autoclave.</p>
+                                <h1 class="font-headline-lg text-headline-lg text-on-primary leading-tight">Control de Instrumental Crítico y Trazabilidad</h1>
+                                <p class="font-body-md text-body-md text-primary-fixed/80">Acceso exclusivo para personal autorizado. Control de usos, ubicación, estado y trazabilidad de brocas reutilizables.</p>
                             </div>
                             <div class="bg-surface-container-lowest/5 rounded-lg p-space-md flex flex-col gap-space-sm">
                                 <div class="flex items-center justify-between">
                                     <span class="font-label-md text-label-md text-primary-fixed">Regla de Oro Activa</span>
-                                    <span class="px-space-xs py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">EN VIGIOR</span>
+                                    <span class="px-space-xs py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">EN VIGOR</span>
                                 </div>
                                 <div class="flex items-baseline gap-space-xs">
                                     <span class="font-display-lg text-display-lg text-on-primary">3</span>
-                                    <span class="font-body-sm text-body-sm text-primary-fixed/70">usos máx. permitidos por broca reutilizable antes de descarte</span>
+                                    <span class="font-body-sm text-body-sm text-primary-fixed/70">usos máx. permitidos por broca reutilizable antes de cambio urgente</span>
                                 </div>
                                 <div class="w-full bg-surface-container-lowest/15 h-1.5 rounded-full overflow-hidden flex">
                                     <div class="bg-tertiary-fixed w-1/3 h-full"></div>
@@ -47,18 +47,18 @@
                                 <div class="flex justify-between font-code-md text-body-sm text-primary-fixed/60">
                                     <span>1º Ciclo</span>
                                     <span>2º Ciclo</span>
-                                    <span class="text-error-container font-semibold">3º Descarte</span>
+                                    <span class="text-error-container font-semibold">3º Cambio urgente</span>
                                 </div>
                             </div>
                         </div>
                         <div class="relative z-10 pt-space-lg flex items-center justify-between text-primary-fixed/60 font-code-md text-body-sm">
                             <span class="flex items-center gap-space-xs">
                                 <span class="material-symbols-outlined text-body-sm">terminal</span>
-                                TERM-OR-04B
+                                CONTROL HOSPITALARIO
                             </span>
                             <span class="flex items-center gap-space-xs">
                                 <span class="material-symbols-outlined">shield</span>
-                                RED QUIRÚRGICA
+                                ACCESO RESTRINGIDO
                             </span>
                         </div>
                     </div>
@@ -74,19 +74,6 @@
                             <h2 class="font-headline-lg text-headline-lg text-on-surface">Ingreso de Personal</h2>
                             <p class="font-body-md text-body-md text-on-surface-variant">Ingrese sus credenciales corporativas</p>
                         </div>
-                        <!-- <div class="my-space-md flex flex-col gap-space-sm">
-                            <div llass="p-space-md rounded-lg bg-surface-container-low flex items-start gap-space-md relative overflow-hidden">
-                                <div class="w-1.5 absolute left-0 top-0 bottom-0 bg-error"></div>
-                                <span class="material-symbols-outlined text-error text-headline-sm shrink-0 mt-0.5">warning</span>
-                                <div class="flex flex-col min-w-0 pr-space-md">
-                                    <span class="font-label-md text-label-md text-on-surface mt-0.5">Validación de Estado Addministrativo</span>
-                                    <span class="font-body-sm text-body-sm text-on-surface-variant">Cuentas sin certificación de protocolo.</span>
-                                </div>
-                                <button class="ml-auto text-on-surface-variant hover:text-on-surface">
-                                    <span class="material-symbols-outlined text-body-md">close</span>
-                                </button>
-                            </div>
-                        </div> -->
                         <form class="flex flex-col gap-space-md" @submit.prevent="Login">
                             <div class="flex flex-col gap-space-xs">
                                 <label class="font-label-md text-label-md text-on-surface justify-between">
@@ -97,50 +84,53 @@
                                     <span class="absolute left-space-md text-on-surface-variant flex items-center pointer-events-none">
                                         <span class="material-symbols-outlined text-headline-sm">alternate_email</span>
                                     </span>
-                                    <input class="w-full h-11 pl-11 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="@hospital.gob.mx" type="text">
+                                    <input v-model.trim="form.correo" class="w-full h-11 pl-11 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="@hospital.gob.mx" type="email" autocomplete="email" required :disabled="auth.loading">
                                 </div>
-                                <!-- <p class="hidden font-label-sm text-label-sm text-error flex items-center gap-space-xs mt-0.5">
-                                    <span class="material-symbols-outline text-body-sm">error</span>
-                                    <span>Campo obligatorio o formato institucional inválido</span>
-                                </p> -->
                             </div>
                             <div class="flex flex-col gap-space-xs">
                                 <label class="font-label-md text-label-md text-on-surface flex justify-between">
                                     <span>Contraseña</span>
-                                    <span class="font-code-md text-body-sm text-on-surface-variant">Mín. 8 caracteres</span>
+                                    <span class="font-code-md text-body-sm text-on-surface-variant">Mín. 12 caracteres</span>
                                 </label>
                                 <div class="relative flex items-center">
                                     <span class="absolute left-space-md text-on-surface-variant flex items-center pointer-events-none">
                                         <span class="material-symbols-outlined text-headline-sm">lock</span>
                                     </span>
-                                    <input class="w-full h-11 pl-11 pr-11 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="Ingrese su contraseña" :type="showPassword ? 'text' : 'password'">
-                                    <button class="absolute right-space-md text-on-surface-variant hover:text-on-surface p-1 rounded transition-colors focus:outline-none" type="button" @click="showPassword = !showPassword">
+                                    <input v-model="form.password" class="w-full h-11 pl-11 pr-11 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="Ingrese su contraseña" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" minlength="12" maxlength="128" required :disabled="auth.loading">
+                                    <button class="absolute right-space-md text-on-surface-variant hover:text-on-surface p-1 rounded transition-colors focus:outline-none" type="button" :disabled="auth.loading" @click="showPassword = !showPassword">
                                         <span class="material-symbols-outlined text-headline-sm">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
                                     </button>
                                 </div>
-                                <div class="flex items-center justify-between pt-space-xs">
-                                    <label class="flex items-center gap-space-sm cursor-pointer select-none">
-                                        <input class="w-4 h-4 rounded text-secondary bg-surface-container-low focus:ring-0 cursor-pointer" type="checkbox">
-                                        <span class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">Recordarme en este equipo</span>
-                                    </label>
-                                </div>
-                                <a class="font-label-md text-label-md text-secondary hover:text-on-secondary-container transition-colors">¿Olvidaste tu contraseña?</a>
+                                <p v-if="errorMessage" class="font-label-sm text-label-sm text-error flex items-center gap-space-xs mt-0.5" role="alert">
+                                    <span class="material-symbols-outlined text-headline-sm shrink-0">error</span>
+                                    <span class="font-body-sm text-body-sm">{{ errorMessage }}</span>
+                                </p>
                             </div>
                             <div class="flex flex-col gap-space-sm mt-space-sm">
-                                <button class="w-full h-12 bg-secondary text-on-secondary rounded-lg font-label-lg text-label-lg shadow-sm hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-space-sm" type="submit">
-                                    <span>Iniciar sesión</span>
-                                    <span class="material-symbols-outlined text-headline-sm">arrow_forward</span>
+                                <button class="w-full h-12 bg-secondary text-on-secondary rounded-lg font-label-lg text-label-lg shadow-sm hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-space-sm" type="submit" :disabled="auth.loading">
+                                    <template v-if="auth.loading">
+                                        <span class="w-5 h-5 border-2 border-on-secondary/30 border-t-on-secondary rounded-full animate-spin"></span>
+                                        <span>Iniciando sesión</span>
+                                    </template>
+                                    <template v-else>
+                                        <span>
+                                            Iniciar sesión
+                                        </span>
+                                        <span class="material-symbols-outlined text-headline-sm">
+                                            arrow_forward
+                                        </span>
+                                    </template>
                                 </button>
                             </div>
                         </form>
                         <div class="pt-space-lg mt-space-md flex flex-col gap-space-xs">
                             <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
                                 <span class="material-symbols-outlined text-body-sm text-on-tertiary-container">verified_user</span>
-                                <span>Terminal hospitalaria segura • Protocolo estricto de bioseguridad quirúrgica</span>
+                                <span>Sistema de Control y Trazabilidad</span>
                             </div>
                             <div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant/80">
                                 <span>Regla de Oro activa: Máximo 3 usos por broca reutilizable.</span>
-                                <span class="font-code-md text-body-sm">V.3.14-CEYE</span>
+                                <span class="font-code-md text-body-sm">BROCA CONTROL</span>
                             </div>
                         </div>
                     </div>
@@ -151,14 +141,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.store';
+import { getApiErrorMessage } from '@/utils/apiError';
 import { useNavigate } from '@/composables/useNavigate';
 
+const router = useRouter()
+const route = useRoute()
+
+const auth = useAuthStore()
+
 const showPassword = ref(false)
-const { goDashboard } = useNavigate()
-const Login = () => {
-    goDashboard()
+
+const errorMessage = ref('')
+
+const form = reactive({
+    correo: '',
+    password: '',
+})
+
+const Login = async () => {
+    if (auth.loading) {
+        return
+    }
+
+    errorMessage.value = ''
+
+    try {
+        await auth.login({
+            correo: form.correo,
+            password: form.password,
+        })
+
+        const redirect = typeof route.query.redirect === 'string'
+                            ? route.query.redirect
+                            : '/dashboard'
+
+        await router.replace(redirect)
+    } catch (error) {
+        errorMessage.value = getApiErrorMessage(error)
+    }
 }
+
 </script>
 
 <style scoped>

@@ -27,7 +27,6 @@ router.get('/movimientos', authorize('reporte.ver'), validate(reporteMovimientos
 
 router.get('/bajas', authorize('reporte.ver'), validate(reporteBajasQuerySchema), getReporteBajas)
 
-router.get('/bajas', authorize('reporte.ver'), validate(reporteBajasQuerySchema), getReporteBajas)
 
 //Exportar archivos
 router.get('/usos/exportar', authorize('reporte.exportar'), validate(reporteUsosQuerySchema), exportarReporteUsos)

@@ -7,11 +7,11 @@
         </div>
 
         <div class="flex items-center gap-1 sm:gap-space-md shrink-0">
-            <button class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 transition-all cursor-pointer text-[12px] font-label-md font-semibold">
+            <!-- <button class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 transition-all cursor-pointer text-[12px] font-label-md font-semibold">
                 <span class="material-symbols-outlined text-[16px]">route</span>
                 <span>Recorrido Quirófano</span>
-            </button>
-            <div class="flex items-center gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-error-container text-on-error-container border border-error/20">
+            </button> -->
+            <!-- <div class="flex items-center gap-1.5 px-2 sm:px-3 py-1 rounded-full bg-error-container text-on-error-container border border-error/20">
                 <span class="w-2 h-2 shrink-0 rounded-full bg-error animate-pulse"></span>
                 <span class="font-label-sm text-label-sm font-bold whitespace-nowrap">
                     <span class="sm:hidden">15</span>
@@ -19,15 +19,15 @@
                         15 Bloqueadas (Cambio Urgente)
                     </span>
                 </span>
-            </div>
-            <button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors shrink-0" type="button">
+            </div> -->
+            <!-- <button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors shrink-0" type="button">
                 <span class="material-symbols-outlined text-[22px]">notifications</span>
                 <span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-error text-on-error font-label-sm text-[10px] flex items-center justify-center font-bold">3</span>
-            </button>
+            </button> -->
             <div ref="userMenuRef" class="relative flex items-center gap-space-sm pl-1 sm:pl-space-sm border-l border-outline-variant/30">
                 <button class="flex items-center gap-space-sm text-left hover:opacity-80 transition-opacity focus:outline-none" type="button" :aria-expanded="isUserMenuOpen" aria-haspopup="menu" @click="toggleUserMenu">
                     <div class="text-right hidden lg:block">
-                        <span class="font-label-md text-label-md text-on-surface block leading-tight">Lic. Andrea Morales</span>
+                        <span class="font-label-md text-label-md text-on-surface block leading-tight">{{ auth.user?.nombre ?? 'Usuario' }}</span>
                         <span class="font-body-sm text-body-sm text-secondary block leading-tight font-medium">Supervisora Quirúrgica</span>
                     </div>
                     <div class="w-8 h-8 shrink-0 rounded-full bg-primary flex items-center justify-center">
@@ -56,44 +56,57 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { useNavigate } from '@/composables/useNavigate';
+import { useAuthStore } from '@/stores/auth.store';
+import { useRouter } from 'vue-router';
 
 defineEmits<{
   (e: 'toggle-sidebar'): void
 }>()
 
-const { goLogin } = useNavigate()
+const router = useRouter()
+const auth = useAuthStore()
+
 const isUserMenuOpen = ref(false)
+
 const userMenuRef = ref<HTMLElement | null>(null)
+
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
+
 const closeUserMenu = () => {
   isUserMenuOpen.value = false
 }
+
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as Node
 
-  if (
-    userMenuRef.value &&
-    !userMenuRef.value.contains(target)
-  ) {
+  if (userMenuRef.value && !userMenuRef.value.contains(target)) {
     closeUserMenu()
   }
 }
+
 const handleEscape = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
     closeUserMenu()
   }
 }
-const Logout = () => {
+
+const Logout = async () => {
   closeUserMenu()
-  goLogin()
+
+  auth.logout()
+
+  await router.replace({
+    name: 'login',
+  })
 }
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   document.addEventListener('keydown', handleEscape)
 })
+
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
   document.removeEventListener('keydown', handleEscape)

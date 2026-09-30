@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen">
-        <div v-if="isSidebarOpen" class="fixed inset-0 z-40 md:hidden" @click="closeSidebar"></div>
+    <div class="min-h-screen bg-surface">
+        <div v-if="isSidebarOpen" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] md:hidden" @click="closeSidebar"></div>
         <div class="fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out md:translate-x-0"
             :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             <Sidebar @close="closeSidebar" />

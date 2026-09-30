@@ -12,8 +12,32 @@ export const useNavigate = () => {
     }
 
   const goInventario = () => {
-    return router.push({ name: 'inventario' })
+    return router.push({ name: 'instrumentos' })
   }
 
-  return { goLogin, goDashboard, goInventario }
+  const goMovimiento = () => {
+    return router.push({ name: 'movimientos' })
+  }
+
+  const goAlerta = () => {
+    return router.push({ name: 'alertas'})
+  }
+
+  const goReporte = () => {
+    return router.push({ name: 'reportes'})
+  }
+
+  const goUsuario = () => {
+    return router.push({ name: 'usuarios'})
+  }
+
+  const goCalalogo = () => {
+    return router.push({ name: 'catalogos'})
+  }
+
+  const goAuditoria = () => {
+    return router.push({ name: 'auditoria'})
+  }
+
+  return { goLogin, goDashboard, goInventario, goMovimiento, goAlerta, goReporte, goUsuario, goCalalogo, goAuditoria }
 }

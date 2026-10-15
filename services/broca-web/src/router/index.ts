@@ -29,6 +29,13 @@ import AuditoriaView from '@/views/auditorias/AuditoriaView.vue'
 import ForbiddenView from '@/views/errors/ForbiddenView.vue'
 import NotFoundView from '@/views/errors/NotFoundView.vue'
 
+import SolicitudCreateView from '@/views/cirugias/SolicitudCreateView.vue'
+import SolicitudInventarioView from '@/views/cirugias/SolicitudInventarioView.vue'
+import CalendarioCirugiasView from '@/views/cirugias/CalendarioCirugiasView.vue'
+
+import PrereporteCirugiaView from '@/views/cirugias/PrereporteCirugiaView.vue'
+import PrereportesListView from '@/views/cirugias/PrereportesListView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -44,7 +51,7 @@ const router = createRouter({
     {
       path: '/dashboard',
       component: LayoutSyT,
-      
+
       meta: {
         requiresAuth: true
       },
@@ -59,7 +66,7 @@ const router = createRouter({
           path: 'instrumentos',
           name: 'instrumentos',
           component: InstrumentosView,
-          
+
           meta: {
             permission: 'instrumento.ver',
           },
@@ -110,7 +117,7 @@ const router = createRouter({
           name: 'reportes',
           component: ReportesView,
 
-          meta:{
+          meta: {
             permission: 'reporte.ver',
           }
         },
@@ -127,7 +134,7 @@ const router = createRouter({
           path: 'usuarios/nuevo',
           name: 'usuario-create',
           component: UsuarioCreateView,
-          
+
           meta: {
             permission: 'usuario.crear',
           },
@@ -159,6 +166,46 @@ const router = createRouter({
             permission: 'auditoria.ver',
           },
         },
+        {
+          path: 'cirugias/nueva',
+          name: 'cirugia-create',
+          component: SolicitudCreateView,
+          meta: {
+            roles: ['TECNICO', 'ADMINISTRADOR'],
+          },
+        },
+        {
+          path: 'cirugias/inventario',
+          name: 'cirugia-inventario',
+          component: SolicitudInventarioView,
+          meta: {
+            roles: ['INVENTARIO', 'ADMINISTRADOR'],
+          },
+        },
+        {
+          path: 'cirugias/calendario',
+          name: 'cirugias-calendario',
+          component: CalendarioCirugiasView,
+          meta: {
+            roles: ['TECNICO', 'INVENTARIO', 'ADMINISTRADOR'],
+          },
+        },
+        {
+          path: 'cirugias/prereportes',
+          name: 'cirugias-prereportes',
+          component: PrereportesListView,
+          meta: {
+            roles: ['TECNICO', 'INVENTARIO', 'ADMINISTRADOR'],
+          },
+        },
+        {
+          path: 'cirugias/prereporte',
+          name: 'cirugias-prereporte',
+          component: PrereporteCirugiaView,
+          meta: {
+            roles: ['TECNICO', 'INVENTARIO', 'ADMINISTRADOR'],
+          },
+        }
       ],
     },
     {
@@ -206,6 +253,32 @@ router.beforeEach(async (to) => {
   if (permission && !auth.hasPermission(permission)) {
     return {
       name: 'forbidden'
+    }
+  }
+
+  const allowedRoles = to.meta.roles as string[] | undefined
+
+  if (allowedRoles && auth.isAuthenticated) {
+    const userRole = auth.roleName
+      .trim()
+      .toUpperCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+
+    const normalizedAllowedRoles = allowedRoles.map((role) =>
+      role
+        .trim()
+        .toUpperCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+    )
+
+    const isAdminAlias = userRole === 'ADMIN' && normalizedAllowedRoles.includes('ADMINISTRADOR')
+
+    if (!normalizedAllowedRoles.includes(userRole) && !isAdminAlias) {
+      return {
+        name: 'forbidden'
+      }
     }
   }
 

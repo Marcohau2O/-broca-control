@@ -359,7 +359,7 @@
             </div>
         </section>
 
-        <div v-if="loading" class="lg:hidden mt-space-md space-y-space-sm">
+        <div v-if="!loading" class="lg:hidden mt-space-md space-y-space-sm">
             <article v-for="movimiento in movimientos" :key="`mobile-${movimiento.id}`" class="bg-surface-container-lowest
                        rounded-xl shadow-sm p-space-sm">
                 <div class="flex items-start justify-between
